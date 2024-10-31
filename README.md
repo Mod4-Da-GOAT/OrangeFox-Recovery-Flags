@@ -6,6 +6,7 @@ These build vars should be declared - in a shell script (eg, in "vendorsetup.sh"
 Copyright (C) 2019-2024 OrangeFox Recovery Project
 Date: 21 September 2024
 #
+```
 "TARGET_ARCH"
   - set this to "arm" or "arm64", depending on whether your device is 32-bit or 64-bit
   - eg., "export TARGET_ARCH=arm"
@@ -772,3 +773,4 @@ Date: 21 September 2024
 - Use with care! Do NOT use unless you are sure that all targeted ROMs on the device will support f2fs!
 - default = 0
 # -----------------------------------
+```
