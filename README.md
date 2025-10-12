@@ -3,11 +3,45 @@
 ```
 Custom build VARs for the OrangeFox Recovery, fox_12.1 branch
 These build vars should be declared - in a shell script (eg, in "vendorsetup.sh"), or at the command line - before building
-Copyright (C) 2019-2024 OrangeFox Recovery Project
-Date: 21 September 2024
+Copyright (C) 2019-2025 OrangeFox Recovery Project
+Date: 12 October 2025
 ```
 #
 ```
+Skip to content
+GitLab
+Menu
+Sign in
+avatarOrangeFox Recovery
+vendor
+Vendor
+Repository
+recovery
+orangefox_build_vars.txt
+orangefox_build_vars.txt
+Darth9's avatar
+Update the documentation
+Darth9 authored 3 days ago
+449bfaf1
+ Code owners
+Assign users and groups as approvers for specific file changes. Learn more.
+orangefox_build_vars.txt
+48.85 KiB
+# ------------------------------------
+#
+# Custom build VARs for the OrangeFox Recovery, fox_12.1 branch
+#
+# These build vars should be declared - in a shell script (eg, in "vendorsetup.sh"), or at the command line - before building
+#
+# All build vars beginning with "FOX_" *must* be exported as environment variables in vendorsetup.sh, or at the command line
+# The build vars beginning with "OF_" can be exported in vendorsetup.sh, or can be declared in a device tree make (ie, ".mk") file
+#
+# Copyright (C) 2019-2025 OrangeFox Recovery Project
+# Date: 8 October 2025
+#
+# -----------------------------------
+#
+#
 "TARGET_ARCH"
   - set this to "arm" or "arm64", depending on whether your device is 32-bit or 64-bit
   - eg., "export TARGET_ARCH=arm"
@@ -20,10 +54,6 @@ Date: 21 September 2024
 #
 "OF_AB_DEVICE_WITH_RECOVERY_PARTITION" [NEW]
    - set to 1 if the device is an A/B device that has a dedicated recovery partition (** make sure that it really is **)
-   - if this is enabled, the following features will automatically be removed
-   	* Changing the OrangeFox splash image/logo
-   	* "Flash Current OrangeFox"
-   	* "Reflash OrangeFox after flashing a ROM"
    - default = 0
 #
 "OF_RECOVERY_AB_FULL_REFLASH_RAMDISK" [NEW]
@@ -75,12 +105,12 @@ Date: 21 September 2024
    - default = "/dev/block/by-name/vendor"
 #
 "FOX_RECOVERY_VENDOR_BOOT_PARTITION" [NEW]
-   - this is for vendor_boot builds only; it shoul normally BE LEFT WELL ALONE !!!
+   - this is for vendor_boot builds only; it should normally BE LEFT WELL ALONE !!!
    - set this ONLY if your device's vendor_boot partition is in a location that is
      different from the default "/dev/block/by-name/vendor_boot"
    - default = "/dev/block/by-name/vendor_boot"
 #
-"FOX_RECOVERY_BOOT_PARTITION" [R11.1 only]
+"FOX_RECOVERY_BOOT_PARTITION" [R11.1 and higher only]
    - !!! this should normally BE LEFT WELL ALONE !!!
    - set this ONLY if your device's boot partition is in a location that is
      different from the default "/dev/block/by-name/boot"
@@ -123,6 +153,12 @@ Date: 21 September 2024
 "FOX_USE_ZSTD_BINARY" [NEW]
    - set this to 1 if you want the zstd binary to be added (/sbin/zstd)
    - this must be set in a shell script, or at the command line, before building
+   - default = 0
+#
+"FOX_USE_DATE_BINARY"
+   - set this to 1 if you want the gnu date binary to be added (/sbin/gnudate)
+   - this must be set in a shell script, or at the command line, before building
+   - this will add about 80kb (or 420kb for arm32) to the size of the recovery image
    - default = 0
 #
 "FOX_USE_RESETPROP_BINARY" [OBSOLETE]
@@ -246,8 +282,15 @@ Date: 21 September 2024
   - set custom flashlight path (if flashlight isn't working)
   - eg. OF_FL_PATH1="/sys/class/leds/led_torch_2"
 #
-"FOX_VERSION"
-  - the version number of the release
+"FOX_VERSION" [OBSOLETE!!]
+  - This is obsolete. The OrangeFox release version number (eg, "R11.2", "R11.4", etc) is now determined automatically
+  - if you wish to add your own version stamp to the release version number, use "FOX_MAINTAINER_PATCH_VERSION" (see below)
+#
+"FOX_MAINTAINER_PATCH_VERSION" [NEW]
+  - use this to add your maintainer version information (if desired) to the OrangeFox release version number
+  - the value supplied here should not be preceded by any separator (an underscore is added automatically)
+  - eg. export FOX_MAINTAINER_PATCH_VERSION="04" (produces something like "R11.3_04")
+  - default = nothing
 #
 "OF_MAINTAINER"
   - the maintainer's name
@@ -276,7 +319,7 @@ Date: 21 September 2024
   - default = 0
 # 
 "OF_CLOCK_POS"
-  - var to control clock position option for devices that has cutout
+  - var to control the clock position option for devices that have a cutout
   - 0 => left, center and right clock positions available
   - 1 => left and right clock positions available
   - 2 => only left clock position available
@@ -359,9 +402,7 @@ Date: 21 September 2024
  - spammed with metadata mount errors in ROMs that don't use metadata encryption
  - default = 0
 #
-"OF_IGNORE_LOGICAL_MOUNT_ERRORS"
-- Set to 1 to record some errors in mounting logical partitions as log entries only
-- default = 0
+"OF_IGNORE_LOGICAL_MOUNT_ERRORS" [!!OBSOLETE !!]
 #
 "OF_FIX_OTA_UPDATE_MANUAL_FLASH_ERROR" [LEGACY]
 - Set this to 1 to try to recover from error situations where people flash incremental block-based OTA zips manually
@@ -575,6 +616,12 @@ Date: 21 September 2024
 - This requires syncing the lptools sources (just run "repo sync" from the usual place, or follow the instructions in the error message that will be generated if the sources are missing)
 - default = 0
 #
+"OF_ENABLE_ALL_PARTITION_TOOLS"
+- Set to 1 to enable all the partition tools
+- This is relevant to dynamic partitions devices only (it is equivalent to using TW_ENABLE_ALL_PARTITION_TOOLS)
+- If this is used, it will also automatically enable 'OF_ENABLE_LPTOOLS'
+- default = 0
+#
 "FOX_PATCH_VBMETA_FLAG" (renamed from "OF_PATCH_VBMETA_FLAG") [EXPERIMENTAL WiP]
 - Set to 1 to instruct magiskboot v24+ to always patch the vbmeta header when patching the recovery/boot image
 - It should not be necessary to use this variable under normal circumstances
@@ -612,21 +659,28 @@ Date: 21 September 2024
    	* "Reflash OrangeFox after flashing a ROM"
 - default = 0
 #
-"FOX_VENDOR_BOOT_RECOVERY" (renamed from "OF_VENDOR_BOOT_RECOVERY") [NEW - Experimental]
-- Do *NOT* use this variable unless you know what you are doing! Bootloops and bricks are *very* possible!
+"FOX_VENDOR_BOOT_RECOVERY" (renamed from "OF_VENDOR_BOOT_RECOVERY") [Experimental]
 - Set to 1 to build a recovery for a vendor_boot-as-recovery (hdr4) device (normally, hdr4 devices are also Virtual A/B devices)
-- There are currently *many* problems with vendor_boot-as-recovery, and custom recoveries are at a very early stage of development
-- If this is enabled, the following features will automatically be removed
+- Do *NOT* make a vendor_boot-as-recovery build, unless you know what you are doing! Bootloops and bricks are *very* possible!
+- There are currently issues with vendor_boot-as-recovery, and custom recoveries are at an early stage of development
+- If this variable is enabled, the following features will automatically be removed
    	* Changing the OrangeFox splash image/logo
    	* "Flash Current OrangeFox"
    	* "Reflash OrangeFox after flashing a ROM"
-- the zip installer that is created will also include the recovery ramdisk image ("vendor_ramdisk_recovery.cpio")
-- if this is enabled, the proper way to flash the built recovery is to reboot an installed working recovery to "fastbootd" mode,
-- and extract and flash the recovery ramdisk image by running the command: "fastboot flash vendor_boot:recovery vendor_ramdisk_recovery.cpio"
-- Do NOT flash the zip installer itself, unless you have both of you ROM's original boot.img and vendor_boot.img, *and* know how to recover the device from bootloops or bricks
-- This is because the outcome of flashing the recovery.img is *unpredictable* - it might be fine, or brick the device, or make the ROM unbootable; any of these is equally possible
-- You really SHOULD stay away from using this variable unless you are a *highly technical risk-taker*, and you can fix any problem *on your own*. You have been warned!
+- The zip installer that is created will also include the recovery ramdisk image ("vendor_ramdisk_recovery.cpio")
+- If this is enabled, the best way to flash the built recovery is to reboot an installed working recovery to "fastbootd" mode,
+- and extract the zip, and flash the recovery ramdisk image by running the command: "fastboot flash vendor_boot:recovery vendor_ramdisk_recovery.cpio"
+- (or by by running the "flash-ramdisk" script bundled with the zip)
+- You can flash the zip installer itself. This is still experimental, so be very careful (first learn how to recover the device from bootloops or bricks!)
+- Don't make a vendor_boot build unless you are a *highly technical risk-taker*, and you can fix any problem *on your own*.
 - default = 0
+#
+"FOX_INSTALLER_VENDOR_BOOT_RAMDISK_INSTALL"  [NEW - Experimental]
+- This is only relevant to "vendor_boot" builds.
+- If set to 1 (which is the default setting when the boot header version is v4 or higher), then the OrangeFox zip installer will install only the vendor_boot ramdisk,
+- instead of overwriting the whole vendor_boot partition
+- Set it to 0 if the boot header version of your ROM (and the stock recovery) is lower than v4, or if you want to disable it for any reason
+- default = 1 (for boot header v4), or 0 (for boot header v3)
 #
 "OF_NO_ADDITIONAL_MIUI_PROPS_CHECK" [NEW]
 - Set to 1 to disable additional checks for MIUI ROMs
@@ -699,22 +753,45 @@ Date: 21 September 2024
 - default = 0
 #
 "FOX_SETTINGS_ROOT_DIRECTORY" [NEW] [EXPERIMENTAL!!]
-- This allows specifying a custom settings directory for the recovery (ie, instead of the default "/sdcard/Fox/")
-- If used, you should specify the directory on the device that OrangeFox should use for its settings/configuration stuff
-- The specified directory name should ALWAYS be terminated with a front-slash (ie, "/"); and it must ALWAYS be available on the device whenever the recovery is running
-- OrangeFox will automatically append "Fox" to the end of the directory that is specified
+- This allows specifying a custom directory for the recovery settings/themes (ie, instead of the default "/sdcard/Fox/")
+- If used, you should specify the directory on the device that OrangeFox should use for its settings/themes stuff
+- The specified directory must ALWAYS be available on the device whenever the recovery is running
+- OrangeFox will automatically append "/Fox" to the end of the directory that is specified
 -
 - Examples:
 -
--  "export FOX_SETTINGS_ROOT_DIRECTORY=/sdcard/PRIVATE/"
+-  "export FOX_SETTINGS_ROOT_DIRECTORY=/sdcard/PRIVATE"
 -
--  "export FOX_SETTINGS_ROOT_DIRECTORY=/sdcard1/MyDev/"
+-  "export FOX_SETTINGS_ROOT_DIRECTORY=/sdcard1/MyDev"
+-
+-  "export FOX_SETTINGS_ROOT_DIRECTORY=/persist/OFRP"
 -
 - This is a HIGHLY EXPERIMENTAL feature, which may have bugs; use with GREAT caution, and with lots of testing
 - It is essential for the programmer's convenience, at the development stages, to avoid the need for constant reconfigurations during testing
-- Do NOT use this in a release build; and you CANNOT use it in a Stable build (the build process will simply terminate with an error)
 -
 - default = none
+#
+"FOX_MISCELLANEOUS_ROOT_DIRECTORY" [NEW] [EXPERIMENTAL!!]
+- This allows specifying a custom directory for the recovery addons, backups, logs, screenshots and etc. expect settings/themes (ie, instead of the default "/sdcard/Fox/")
+- OrangeFox will automatically append "/Fox" to the end of the directory that is specified
+- The specified partition should be presented in the fstab
+-
+- Examples:
+-
+-  "export FOX_SETTINGS_ROOT_DIRECTORY=/sdcard/PRIVATE"
+-
+-  "export FOX_SETTINGS_ROOT_DIRECTORY=/sdcard1/MyDev"
+-
+-
+- This is a HIGHLY EXPERIMENTAL feature, which may have bugs; use with GREAT caution, and with lots of testing
+- It is essential for the programmer's convenience, at the development stages, to avoid the need for constant reconfigurations during testing
+-
+- default = none
+#
+"FOX_ALLOW_EARLY_SETTINGS_LOAD" [NEW]
+- This allows OrangeFox to load and apply its settings and themes when the gui has just started
+- Depending on availability, the recovery will load themes and settings during the early stage of gui initialization
+- default = 0
 #
 "FOX_BASH_TO_SYSTEM_BIN" [NEW]
 - Set this to 1 to install the prebuilt bash binary in /system/bin/, instead of the standard /sbin/ (at build time)
@@ -732,6 +809,11 @@ Date: 21 September 2024
 #
 "OF_USE_LEGACY_BATTERY_SERVICES" [NEW]
 - Set to 1 if the battery percentage in the status bar is not working properly (eg, if it shows 100% at all times)
+- default = 0
+#
+"OF_UNBIND_SDCARD_F2FS"
+- Set to 1 to try to unbind /sdcard if it is still bind-mounted, before data format or repair
+- This is only needed if there are problems with formatting data
 - default = 0
 #
 "OF_WIPE_METADATA_AFTER_DATAFORMAT" [NEW] [EXPERIMENTAL!!]
@@ -769,9 +851,93 @@ Date: 21 September 2024
 - If you want to choose manually the directories to be processed, then specify them, instead of using "1" (eg, export FOX_COMPRESS_EXECUTABLES="/sbin /system/bin /vendor/bin")
 - default = 0
 #
+"FOX_DRASTIC_SIZE_REDUCTION" [NEW] [!! EXPERIMENTAL !!]
+- Set this to 1 to trigger some *drastic* steps to reduce the size of the recovery ramdisk
+- If this is enabled, virtually all the OrangeFox extra binaries will be removed from the recovery, and "FOX_COMPRESS_EXECUTABLES" will automatically be enabled
+- You should only use this if all other attempts at reducing the size of the recovery have failed, and the recovery is still too big for the device
+- This feature is experimental. Use with great caution; test every feature in every build extensively to ensure that nothing is broken
+- default = 0
+#
+"FOX_EXTREME_SIZE_REDUCTION" [NEW] [!! EXPERIMENTAL !!]
+- Set this to 1 to trigger some rather *extreme* steps to reduce the size of the recovery ramdisk
+- You should only use this if all other attempts at reducing the size of the recovery have failed, and the recovery is still too big for the device
+- If this is enabled, "FOX_DRASTIC_SIZE_REDUCTION" will also be automatically enabled, and other features will be disabled or removed
+- This feature is experimental. Use with extreme caution; test every feature in every build extensively to ensure that nothing is broken
+- This feature may be summarily withdrawn if it proves problematic for too many people
+- default = 0
+#
 "OF_FORCE_DATA_FORMAT_F2FS" [NEW]
 - Set this to 1 to force the selection of f2fs when formatting data; this is only needed when f2fs is never selected by default
 - Use with care! Do NOT use unless you are sure that all targeted ROMs on the device will support f2fs!
 - default = 0
+#
+"OF_FORCE_DATA_FORMAT_EXT4" [NEW]
+- Set this to 1 to force the selection of ext4 when formatting data; this is only needed when ext4 is never selected by default
+- Use with care! Do NOT use unless you are sure that all targeted ROMs on the device will support ext4!
+- default = 0
+#
+"FOX_MOVE_MAGISK_INSTALLER_TO_RAMDISK" [NEW]
+- Set to 1 to move the Magisk installer/uninstaller ZIP to the ramdisk.
+- This will make the Magisk addon independent of access to /sdcard, but it will take up more space in the ramdisk.
+- WARNING: monitor the free space in the ramdisk, as this feature may take up all available space in the ramdisk.
+- In such a case, recovery is likely to fail to boot, although the build will complete without errors
+- default = 0
+#
+"OF_SKIP_PREBUILT_MODULES" [NEW]
+- Set to 1 to skip loading prebuilt kernel modules from the ramdisk if they are present.
+- default = 0
+#
+"OF_FORCE_CASEFOLDING" [NEW]
+- Set to 1 to force the casefolding props to true.
+- These props are responsible for formatting /data with the required arguments.
+- This disables the automatic detection of the values for the external_storage.projid.enabled, external_storage.casefold.enabled,
+- and external_storage.sdcardfs.enabled props from /vendor/build.prop and forcibly sets their values to 1, except for external_storage.sdcardfs.enabled, which is set to 0.
+- This is useful for devices that shipped with Android 11+/FBEv2, where casefolding is always used,
+- and it prevents incorrect determination of these values if /vendor is unavailable.
+- default = 0
+#
+"FOX_USE_FSCK_EROFS_BINARY" [NEW]
+   - set this to 1 if you want the prebuilt fsck.erofs binary to be added (/sbin/fsck.erofs)
+   - this must be set in a shell script, or at the command line, before building
+   - test this thoroughly to ensure it works correctly on your device before adding to your build
+   - default = 0
+#
+"FOX_USE_PATCHELF_BINARY" [NEW]
+   - set this to 1 if you want the prebuilt patchelf binary to be added (/sbin/patchelf)
+   - this must be set in a shell script, or at the command line, before building
+   - test this thoroughly to ensure it works correctly on your device before adding to your build
+   - default = 0
+#
+"FOX_USE_DMSETUP" [NEW]
+   - set this to 1 if you want to use 'dmsetup' to try and work around problems with formatting the /data partition
+   - if this is enabled, the dmsetup binary will be built into the recovery, and will be called just before formatting /data
+   - this is only useful for devices/ROMs that have dynamic partitions
+   - default = 0
+#
+"OF_USE_DMCTL" [NEW] (renamed from "FOX_USE_DMCTL")
+   - set this to 1 if you want to use 'dmctl' (as an alternative to 'dmsetup') to try and work around problems with formatting the /data partition
+   - if this is enabled, the dmsetup binary will be built into the recovery, and will be called just before formatting /data
+   - this is only useful for devices/ROMs that have dynamic partitions
+   - default = 0
+#
+"FOX_ENABLE_KERNELSU_SUPPORT" [NEW] [ARM64 ONLY]
+   - set this to 1 to add support for installing KernelSU to the OrangeFox addons; the 'ksud' binary (2.3mb in size) will also be installed if not already there
+   - this can only work on VirtualAB devices whose ROMs use supported 5.x and 6.6 GKI kernels; don't try it on any other system - it simply will not work
+   -   *Note*: this will use an extra 2.5mb of storage in the recovery ramdisk (inclusive of the 'ksud' binary); so, do NOT use this if recovery space is limited,
+   -    otherwise the recovery might not boot at all (eg, blank screen), even if it builds successfully
+   - default = 0
+#
+"FOX_ENABLE_KERNELSU_NEXT_SUPPORT" [NEW] [ARM64 ONLY]
+   - set this to 1 to add support for installing KernelSU Next to the OrangeFox addons; the 'ksud' binary (2.3mb in size) will also be installed if not already there
+   - this can only work on VirtualAB devices whose ROMs use supported 5.x and 6.6 GKI kernels; don't try it on any other system - it simply will not work
+   -   *Note*: this will use an extra 2.5mb of storage in the recovery ramdisk (inclusive of the 'ksud' binary); so, do NOT use this if recovery space is limited,
+   -    otherwise the recovery might not boot at all (eg, blank screen), even if it builds successfully
+   - default = 0
+#
+"FOX_ENABLE_SUKISU_SUPPORT" [NEW] [ARM64 ONLY]
+   - set this to 1 to add support for installing SukiSU to the OrangeFox addons;  the 'ksud' binary (2.3mb in size) will also be installed if not already there
+   - this can only work on VirtualAB devices whose ROMs use supported 5.x and 6.6 GKI kernels; don't try it on any other system - it simply will not work
+   -   *Note*: this will use an extra 2.5mb of storage in the recovery ramdisk (inclusive of the 'ksud' binary); so, do NOT use this if recovery space is limited,
+   -    otherwise the recovery might not boot at all (eg, blank screen), even if it builds successfully
+   - default = 0
 # -----------------------------------
-```
