@@ -8,40 +8,7 @@ Date: 12 October 2025
 ```
 #
 ```
-Skip to content
-GitLab
-Menu
-Sign in
-avatarOrangeFox Recovery
-vendor
-Vendor
-Repository
-recovery
-orangefox_build_vars.txt
-orangefox_build_vars.txt
-Darth9's avatar
-Update the documentation
-Darth9 authored 3 days ago
-449bfaf1
- Code owners
-Assign users and groups as approvers for specific file changes. Learn more.
-orangefox_build_vars.txt
-48.85 KiB
-# ------------------------------------
-#
-# Custom build VARs for the OrangeFox Recovery, fox_12.1 branch
-#
-# These build vars should be declared - in a shell script (eg, in "vendorsetup.sh"), or at the command line - before building
-#
-# All build vars beginning with "FOX_" *must* be exported as environment variables in vendorsetup.sh, or at the command line
-# The build vars beginning with "OF_" can be exported in vendorsetup.sh, or can be declared in a device tree make (ie, ".mk") file
-#
-# Copyright (C) 2019-2025 OrangeFox Recovery Project
-# Date: 8 October 2025
-#
-# -----------------------------------
-#
-#
+
 "TARGET_ARCH"
   - set this to "arm" or "arm64", depending on whether your device is 32-bit or 64-bit
   - eg., "export TARGET_ARCH=arm"
