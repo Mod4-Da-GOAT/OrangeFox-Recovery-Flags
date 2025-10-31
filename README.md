@@ -42,9 +42,13 @@ Date: 12 October 2025
 #
 "FOX_LOCAL_CALLBACK_SCRIPT"
    - point to a custom "callback" script that will be executed just before creating the final recovery image
-   - eg, a script to delete some files, or add some files to the ramdisk
+   - eg, a script to delete some files, or add some files to the ramdisk, or to the OrangeFox zip, etc
    - ensure that you set the executable bit of the script (eg, "chmod 0755 my-callback-script.sh")
-   - there is no default
+   - this callback script will be executed twice:
+   -	1. just before building the recovery image; here, it will receive the path of the recovery ramdisk as the first argument, and "--first-call" as the second argument
+   -	2. just before creating the OrangeFox zip; here, it will receive the path of the temporary working directory as the first argument, and "--last-call" as the second argument
+   - ensure that you full test the callback script to be clear that it does exactly what you want it to do, and nothing else
+   - default = nothing
 #
 "FOX_REPLACE_TOOLBOX_GETPROP"
    - set to 1 to replace the (stripped down) toolbox version of the "getprop" command
@@ -432,10 +436,9 @@ Date: 12 October 2025
 - default = 0
 #
 "FOX_NO_SAMSUNG_SPECIAL" (renamed from "OF_NO_SAMSUNG_SPECIAL")  [LEGACY]
-- set this to 1 to disable some operations relating only to Samsung devices - these are:
--   1) appending "SEANDROIDENFORCE" to the recovery image of a Samsung device
--   2) creating an Odin flashable tar file of the recovery image
-- all decryption/recovery passwords are successfully entered)
+- set this to 1 to disable operations relating only to Samsung devices, i.e.
+-   appending "SEANDROIDENFORCE" to the recovery image of a Samsung device
+- you *MUST* use this if your device tree already has a makefile (e.g., mkbootimg.mk or bootimg.mk) that does the same thing
 - default = 0
 #
 "OF_DEVICE_WITHOUT_PERSIST"
@@ -739,7 +742,7 @@ Date: 12 October 2025
 - default = none
 #
 "FOX_MISCELLANEOUS_ROOT_DIRECTORY" [NEW] [EXPERIMENTAL!!]
-- This allows specifying a custom directory for the recovery addons, backups, logs, screenshots and etc. expect settings/themes (ie, instead of the default "/sdcard/Fox/")
+- This allows specifying a custom directory for the recovery addons, backups, logs, screenshots and etc, except settings/themes (ie, instead of the default "/sdcard/Fox/")
 - OrangeFox will automatically append "/Fox" to the end of the directory that is specified
 - The specified partition should be presented in the fstab
 -
@@ -906,5 +909,10 @@ Date: 12 October 2025
    - this can only work on VirtualAB devices whose ROMs use supported 5.x and 6.6 GKI kernels; don't try it on any other system - it simply will not work
    -   *Note*: this will use an extra 2.5mb of storage in the recovery ramdisk (inclusive of the 'ksud' binary); so, do NOT use this if recovery space is limited,
    -    otherwise the recovery might not boot at all (eg, blank screen), even if it builds successfully
+   - default = 0
+#
+"OF_MASK_GET_FOLDER_SIZE_READ_ERRORS" [NEW]
+   - set this to 1 to cause certain read errors - when running Get_File_Size() - to be logged in the log file, rather than the recovery console
+   - this is not recommended, because the presence of the errors indicates a problem; it is best to find and cause and to fix it
    - default = 0
 # -----------------------------------
