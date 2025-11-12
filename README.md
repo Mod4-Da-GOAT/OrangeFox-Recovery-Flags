@@ -915,4 +915,10 @@ Date: 12 October 2025
    - set this to 1 to cause certain read errors - when running Get_File_Size() - to be logged in the log file, rather than the recovery console
    - this is not recommended, because the presence of the errors indicates a problem; it is best to find and cause and to fix it
    - default = 0
+#
+"OF_ENABLE_FRP_ADDON" [NEW] [! EXPERIMENTAL !]
+   - set this to 1 to include an addon for removing factory reset protection (FRP) in the "OrangeFox addons"
+   - the addon requires the device to have a dedicated frp partition; if there is none, then enabling this variable will achieve absolutely nothing
+   - the addon is very highly experimental, and should be used with great care; it should NOT be used unless everything else has failed
+   - default = 0
 # -----------------------------------
