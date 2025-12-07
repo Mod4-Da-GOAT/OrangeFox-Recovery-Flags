@@ -4,7 +4,7 @@
 Custom build VARs for the OrangeFox Recovery, fox_12.1 branch
 These build vars should be declared - in a shell script (eg, in "vendorsetup.sh"), or at the command line - before building
 Copyright (C) 2019-2025 OrangeFox Recovery Project
-Date: 12 October 2025
+Date: 1 December 2025
 ```
 #
 ```
