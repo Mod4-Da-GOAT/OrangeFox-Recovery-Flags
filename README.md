@@ -660,7 +660,7 @@ Date: 12 October 2025
 "OF_DEFAULT_TIMEZONE" [NEW]
 - Use this to change the default time zone
 - eg, export OF_DEFAULT_TIMEZONE="CET-1"
-- It is your responsibility to supply a valid timezone (see gui/theme/common/watch.xml for examples)
+- It is your responsibility to supply a valid timezone (see gui/theme/portrait_hdpi/pages/settings.xml for examples)
 - default = "CET-1;CEST,M3.5.0,M10.5.0"
 #
 "OF_ENABLE_FS_COMPRESSION" [NEW - Experimental]
