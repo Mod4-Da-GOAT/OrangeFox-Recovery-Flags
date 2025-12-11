@@ -1,10 +1,12 @@
 # OrangeFox-Recovery-Flags
 "https://gitlab.com/OrangeFox/vendor/recovery/-/blob/fox_12.1/orangefox_build_vars.txt"
 ```
-Custom build VARs for the OrangeFox Recovery, fox_12.1 branch
-These build vars should be declared - in a shell script (eg, in "vendorsetup.sh"), or at the command line - before building
-Copyright (C) 2019-2025 OrangeFox Recovery Project
-Date: 1 December 2025
+ Custom build VARs for the OrangeFox Recovery, fox_12.1 branch
+ These build vars should be declared - in a shell script (eg, in "vendorsetup.sh"), or at the command line - before building
+ All build vars beginning with "FOX_" *must* be exported as environment variables in vendorsetup.sh, or at the command line
+ The build vars beginning with "OF_" can be exported in vendorsetup.sh, or can be declared in a device tree make (ie, ".mk") file
+ Copyright (C) 2019-2025 OrangeFox Recovery Project
+ Date: 11 December 2025
 ```
 #
 ```
@@ -435,10 +437,12 @@ Date: 1 December 2025
 - all decryption/recovery passwords are successfully entered)
 - default = 0
 #
-"FOX_NO_SAMSUNG_SPECIAL" (renamed from "OF_NO_SAMSUNG_SPECIAL")  [LEGACY]
-- set this to 1 to disable operations relating only to Samsung devices, i.e.
+"FOX_NO_SAMSUNG_SPECIAL" (renamed from "OF_NO_SAMSUNG_SPECIAL")  [OBSOLETE]
+#
+"FOX_USE_SAMSUNG_SPECIAL" [NEW]
+- set this to 1 to enable certain operations relating only to Samsung devices, i.e.
 -   appending "SEANDROIDENFORCE" to the recovery image of a Samsung device
-- you *MUST* use this if your device tree already has a makefile (e.g., mkbootimg.mk or bootimg.mk) that does the same thing
+- you should not use this if your device tree already has a makefile (e.g., mkbootimg.mk or bootimg.mk) that performs that operation
 - default = 0
 #
 "OF_DEVICE_WITHOUT_PERSIST"
@@ -921,4 +925,4 @@ Date: 1 December 2025
    - the addon requires the device to have a dedicated frp partition; if there is none, then enabling this variable will achieve absolutely nothing
    - the addon is very highly experimental, and should be used with great care; it should NOT be used unless everything else has failed
    - default = 0
-# -----------------------------------
+----------------
